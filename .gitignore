@@ -1,0 +1,14 @@
+# Build
+bin/
+obj/
+
+# Visual Studio
+.vs/
+*.user
+
+# Dados da aplicacao: quem clonar recebe o arquivo criado na primeira execucao
+simulacoes.json
+
+# Material de apoio, nao faz parte da entrega
+CLAUDE.md
+doc/
