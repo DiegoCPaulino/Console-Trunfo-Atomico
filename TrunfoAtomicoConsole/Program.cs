@@ -1,4 +1,5 @@
-﻿using TrunfoAtomicoConsole.Models;
+﻿using TrunfoAtomicoConsole.Data;
+using TrunfoAtomicoConsole.Models;
 
 namespace TrunfoAtomicoConsole
 {
@@ -6,30 +7,37 @@ namespace TrunfoAtomicoConsole
     {
         static void Main(string[] args)
         {
-            Testar(1, 10, 80, 0);
-            Testar(2, 10, 80, 10);
-            Testar(3, 10, 80, 30);
-            Testar(4, 8.0249, 100, 16.0498);
-            Testar(5, 0, 80, 10);
-            Testar(6, 10, -5, 10);
-            Testar(7, 10, 80, -1);
+            bool arquivoExistia = File.Exists("simulacoes.json");
+            Console.WriteLine("Arquivo existia antes de carregar: " + arquivoExistia);
 
-            Console.WriteLine("Fim dos testes.");
+            List<Simulacao> simulacoes = ArquivoSimulacoes.Carregar();
+            Console.WriteLine("Carregar() devolveu " + simulacoes.Count + " simulacoes:");
+            foreach (Simulacao simulacao in simulacoes)
+            {
+                Imprimir(simulacao);
+            }
+
+            if (!arquivoExistia)
+            {
+                simulacoes.Add(new Simulacao(4, "Carbono-14", 2081925.0, 10, 2081925.0));
+                ArquivoSimulacoes.Salvar(simulacoes);
+
+                Console.WriteLine();
+                Console.WriteLine("Carbono-14 acrescentado e lista salva.");
+                Console.WriteLine("Arquivo gravado em: " + Path.GetFullPath("simulacoes.json"));
+                Console.WriteLine("Conteudo do arquivo:");
+                Console.WriteLine(File.ReadAllText("simulacoes.json"));
+            }
         }
 
-        static void Testar(int caso, double meiaVidaDias, double quantidadeGramas, double tempoDias)
+        static void Imprimir(Simulacao simulacao)
         {
-            Console.Write("Caso " + caso + " | meia-vida " + meiaVidaDias + " | " + quantidadeGramas + " g | " + tempoDias + " dias -> ");
-
-            try
-            {
-                Simulacao simulacao = new Simulacao(caso, "Teste", meiaVidaDias, quantidadeGramas, tempoDias);
-                Console.WriteLine(simulacao.CalcularQuantidadeRestanteGramas().ToString("F4") + " g - " + simulacao.CalcularPercentualRestante().ToString("F2") + "%");
-            }
-            catch (ArgumentException ex)
-            {
-                Console.WriteLine("ArgumentException: " + ex.Message);
-            }
+            Console.WriteLine("  [" + simulacao.Id + "] " + simulacao.NomeIsotopo
+                + " | meia-vida " + simulacao.MeiaVidaDias
+                + " | " + simulacao.QuantidadeInicialGramas + " g"
+                + " | " + simulacao.TempoDias + " dias"
+                + " -> " + simulacao.CalcularQuantidadeRestanteGramas().ToString("F4") + " g - "
+                + simulacao.CalcularPercentualRestante().ToString("F2") + "%");
         }
     }
 }
