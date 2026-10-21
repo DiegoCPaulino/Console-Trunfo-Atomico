@@ -31,12 +31,9 @@ namespace TrunfoAtomicoConsole
                     {
                         Console.Write("Nome do isotopo (ex: Iodo-131): ");
                         string nome = Console.ReadLine();
-                        Console.Write("Meia-vida em dias (use virgula, ex: 8,0249): ");
-                        double meiaVidaDias = double.Parse(Console.ReadLine());
-                        Console.Write("Quantidade inicial em gramas (use virgula, ex: 100,5): ");
-                        double quantidadeInicialGramas = double.Parse(Console.ReadLine());
-                        Console.Write("Tempo decorrido em dias (use virgula, ex: 16,0498): ");
-                        double tempoDias = double.Parse(Console.ReadLine());
+                        double meiaVidaDias = LerNumero("Meia-vida em dias (use virgula, ex: 8,0249): ");
+                        double quantidadeInicialGramas = LerNumero("Quantidade inicial em gramas (use virgula, ex: 100,5): ");
+                        double tempoDias = LerNumero("Tempo decorrido em dias (use virgula, ex: 16,0498): ");
 
                         // Sem banco não há Identity para numerar; o maior Id + 1 garante um número que ainda não existe.
                         int maiorId = 0;
@@ -126,6 +123,18 @@ namespace TrunfoAtomicoConsole
                     Console.ReadLine();
                 }
             }
+        }
+
+        static double LerNumero(string pergunta)
+        {
+            Console.Write(pergunta);
+            string texto = Console.ReadLine();
+
+            // No Windows em português o ponto é separador de milhar: "8.0249" viraria 80249 sem erro nenhum.
+            if (texto.Contains("."))
+                throw new FormatException();
+
+            return double.Parse(texto);
         }
 
         static void ExibirSimulacao(Simulacao simulacao)
